@@ -15,7 +15,7 @@
             overflow: hidden; /* Hide overflow to prevent scrollbar */
         }
 
-        h1 {
+        h1, h2 {
             font-size: 3em; /* Big font size */
             color: #000080; /* Dark blue text color */
             cursor: pointer; /* Change cursor to pointer on hover */
@@ -23,10 +23,15 @@
         }
 
         /* Style for the welcome message */
-        #welcomeMessage {
+        .screen {
             display: none; /* Initially hidden */
             text-align: center;
-            animation: fadeIn 1s ease-in-out forwards; /* Apply fade-in animation */
+            position: absolute; /* Position screens absolutely */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center screens */
+            width: 80%; /* Adjust width of screens */
+            max-width: 600px; /* Maximum width of screens */
         }
 
         /* Animation keyframes for fade-in */
@@ -42,23 +47,69 @@
 </head>
 <body>
     <!-- Levi's Site -->
-    <h1 id="levisSite" onclick="switchScreens()">Levi's Site</h1>
+    <h1 onclick="showWelcome()">Levi's Site</h1>
 
     <!-- Welcome message -->
-    <div id="welcomeMessage">
+    <div id="welcome" class="screen">
         <h2>Welcome to the site</h2>
     </div>
 
-    <script>
-        // Get references to elements
-        var levisSite = document.getElementById("levisSite");
-        var welcomeMessage = document.getElementById("welcomeMessage");
+    <!-- Screen 1 -->
+    <div id="screen1" class="screen">
+        <h2>Screen 1</h2>
+    </div>
 
-        // Function to switch screens
-        function switchScreens() {
-            levisSite.style.display = "none"; // Hide Levi's Site
-            welcomeMessage.style.display = "block"; // Show Welcome message
+    <!-- Screen 2 -->
+    <div id="screen2" class="screen">
+        <h2>Screen 2</h2>
+    </div>
+
+    <!-- Screen 3 -->
+    <div id="screen3" class="screen">
+        <h2>Screen 3</h2>
+    </div>
+
+    <script>
+        // Get references to screens
+        var welcomeScreen = document.getElementById("welcome");
+        var screen1 = document.getElementById("screen1");
+        var screen2 = document.getElementById("screen2");
+        var screen3 = document.getElementById("screen3");
+
+        // Function to show welcome screen
+        function showWelcome() {
+            welcomeScreen.style.display = "block";
+            screen1.style.display = "none";
+            screen2.style.display = "none";
+            screen3.style.display = "none";
         }
+
+        // Function to show screen 1
+        function showScreen1() {
+            welcomeScreen.style.display = "none";
+            screen1.style.display = "block";
+            screen2.style.display = "none";
+            screen3.style.display = "none";
+        }
+
+        // Function to show screen 2
+        function showScreen2() {
+            welcomeScreen.style.display = "none";
+            screen1.style.display = "none";
+            screen2.style.display = "block";
+            screen3.style.display = "none";
+        }
+
+        // Function to show screen 3
+        function showScreen3() {
+            welcomeScreen.style.display = "none";
+            screen1.style.display = "none";
+            screen2.style.display = "none";
+            screen3.style.display = "block";
+        }
+
+        // Initial screen to show
+        showWelcome();
     </script>
 </body>
 </html>
