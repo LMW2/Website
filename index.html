@@ -79,20 +79,20 @@
     </div>
 
     <script>
-        var currentSlide = 1;
+        var currentSlide = 0;
 
         function showSlide(n) {
             var slides = document.getElementsByClassName("slide");
-            if (n > slides.length) {
-                currentSlide = 1;
+            if (n >= slides.length) {
+                currentSlide = 0;
             }
-            if (n < 1) {
-                currentSlide = slides.length;
+            if (n < 0) {
+                currentSlide = slides.length - 1;
             }
             for (var i = 0; i < slides.length; i++) {
                 slides[i].classList.remove("active");
             }
-            slides[currentSlide - 1].classList.add("active");
+            slides[currentSlide].classList.add("active");
         }
 
         function nextSlide() {
