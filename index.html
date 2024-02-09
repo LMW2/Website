@@ -3,113 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Levi's Site</title>
+    <title>Slide Show</title>
     <style>
         body {
-            background-color: #f0f8ff; /* Light blue background color */
-            margin: 0; /* Remove default margin */
-            height: 100vh; /* Set height to full viewport height */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Hide overflow to prevent scrollbar */
         }
 
-        h1, h2 {
-            font-size: 3em; /* Big font size */
-            color: #000080; /* Dark blue text color */
-            cursor: pointer; /* Change cursor to pointer on hover */
-            animation: fadeIn 1s ease-in-out forwards; /* Apply fade-in animation */
+        .slide-container {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            overflow: hidden;
         }
 
-        /* Style for the welcome message */
-        .screen {
-            display: none; /* Initially hidden */
-            text-align: center;
-            position: absolute; /* Position screens absolutely */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .arrow {
+            position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Center screens */
-            width: 80%; /* Adjust width of screens */
-            max-width: 600px; /* Maximum width of screens */
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
-        /* Animation keyframes for fade-in */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+        .arrow-left {
+            left: 10px;
+        }
+
+        .arrow-right {
+            right: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Levi's Site -->
-    <h1 onclick="showWelcome()">Levi's Site</h1>
+    <div class="slide-container">
+        <div class="slide active" id="slide1">
+            <h1>Slide 1</h1>
+        </div>
+        <div class="slide" id="slide2">
+            <h1>Slide 2</h1>
+        </div>
+        <div class="slide" id="slide3">
+            <h1>Slide 3</h1>
+        </div>
+        <div class="slide" id="slide4">
+            <h1>Slide 4</h1>
+        </div>
 
-    <!-- Welcome message -->
-    <div id="welcome" class="screen">
-        <h2>Welcome to the site</h2>
-    </div>
-
-    <!-- Screen 1 -->
-    <div id="screen1" class="screen">
-        <h2>Screen 1</h2>
-    </div>
-
-    <!-- Screen 2 -->
-    <div id="screen2" class="screen">
-        <h2>Screen 2</h2>
-    </div>
-
-    <!-- Screen 3 -->
-    <div id="screen3" class="screen">
-        <h2>Screen 3</h2>
+        <div class="arrow arrow-left" onclick="prevSlide()">&#10094;</div>
+        <div class="arrow arrow-right" onclick="nextSlide()">&#10095;</div>
     </div>
 
     <script>
-        // Get references to screens
-        var welcomeScreen = document.getElementById("welcome");
-        var screen1 = document.getElementById("screen1");
-        var screen2 = document.getElementById("screen2");
-        var screen3 = document.getElementById("screen3");
+        var currentSlide = 1;
 
-        // Function to show welcome screen
-        function showWelcome() {
-            welcomeScreen.style.display = "block";
-            screen1.style.display = "none";
-            screen2.style.display = "none";
-            screen3.style.display = "none";
+        function showSlide(n) {
+            var slides = document.getElementsByClassName("slide");
+            if (n > slides.length) {
+                currentSlide = 1;
+            }
+            if (n < 1) {
+                currentSlide = slides.length;
+            }
+            for (var i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active");
+            }
+            slides[currentSlide - 1].classList.add("active");
         }
 
-        // Function to show screen 1
-        function showScreen1() {
-            welcomeScreen.style.display = "none";
-            screen1.style.display = "block";
-            screen2.style.display = "none";
-            screen3.style.display = "none";
+        function nextSlide() {
+            showSlide(currentSlide + 1);
         }
 
-        // Function to show screen 2
-        function showScreen2() {
-            welcomeScreen.style.display = "none";
-            screen1.style.display = "none";
-            screen2.style.display = "block";
-            screen3.style.display = "none";
+        function prevSlide() {
+            showSlide(currentSlide - 1);
         }
 
-        // Function to show screen 3
-        function showScreen3() {
-            welcomeScreen.style.display = "none";
-            screen1.style.display = "none";
-            screen2.style.display = "none";
-            screen3.style.display = "block";
-        }
-
-        // Initial screen to show
-        showWelcome();
+        showSlide(currentSlide);
     </script>
 </body>
 </html>
