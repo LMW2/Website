@@ -28,6 +28,9 @@
         var canvas = document.getElementById("gameCanvas");
         var ctx = canvas.getContext("2d");
 
+        var originalWidth = 600; // Original canvas width
+        var originalHeight = 400; // Original canvas height
+
         var bird = {
             x: 50,
             y: canvas.height / 2,
@@ -67,8 +70,19 @@
         }
 
         function draw() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            // Maintain aspect ratio
+            var aspectRatio = originalWidth / originalHeight;
+            var newWidth = window.innerWidth;
+            var newHeight = window.innerHeight;
+
+            if (newWidth / newHeight > aspectRatio) {
+                newWidth = newHeight * aspectRatio;
+            } else {
+                newHeight = newWidth / aspectRatio;
+            }
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -122,10 +136,7 @@
             }
         });
 
-        window.addEventListener("resize", function() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        window.addEventListener("resize", draw);
 
         draw();
     </script>
