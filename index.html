@@ -40,8 +40,9 @@
         };
 
         var pipes = [];
-        var gap = 150; // Increased gap between pipes
-        var pipeWidth = 30;
+        var gapVertical = 150; // Increased gap between top and bottom pipes
+        var gapHorizontal = 200; // Increased gap between pipes horizontally
+        var pipeWidth = 50; // Increased width of pipes
         var pipeSpeed = 2;
         var pipeInterval = 150;
         var score = 0;
@@ -57,7 +58,7 @@
         function drawPipe(x, height) {
             ctx.beginPath();
             ctx.rect(x, 0, pipeWidth, height);
-            ctx.rect(x, height + gap, pipeWidth, canvas.height - height - gap);
+            ctx.rect(x, height + gapVertical, pipeWidth, canvas.height - height - gapVertical);
             ctx.fillStyle = "green";
             ctx.fill();
             ctx.closePath();
@@ -98,7 +99,7 @@
             if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - pipeInterval) {
                 pipes.push({
                     x: canvas.width,
-                    height: Math.floor(Math.random() * (canvas.height - gap - 50)) + 50
+                    height: Math.floor(Math.random() * (canvas.height - gapVertical - 50)) + 50
                 });
             }
 
@@ -111,7 +112,7 @@
                 }
 
                 if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + pipeWidth &&
-                    (bird.y - bird.radius < pipes[i].height || bird.y + bird.radius > pipes[i].height + gap)) {
+                    (bird.y - bird.radius < pipes[i].height || bird.y + bird.radius > pipes[i].height + gapVertical)) {
                     gameOver();
                 }
 
