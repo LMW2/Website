@@ -17,10 +17,38 @@
         h1 {
             font-size: 3em; /* Big font size */
             color: #000080; /* Dark blue text color */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+
+        /* Style for the welcome message */
+        #welcomeMessage {
+            display: none; /* Initially hidden */
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Levi's Site</h1>
+    <!-- Levi's Site -->
+    <h1 id="levisSite">Levi's Site</h1>
+
+    <!-- Welcome message -->
+    <div id="welcomeMessage">
+        <h2>Welcome to the site</h2>
+    </div>
+
+    <script>
+        // Get references to elements
+        var levisSite = document.getElementById("levisSite");
+        var welcomeMessage = document.getElementById("welcomeMessage");
+
+        // Function to switch screens
+        function switchScreens() {
+            levisSite.style.display = "none"; // Hide Levi's Site
+            welcomeMessage.style.display = "block"; // Show Welcome message
+        }
+
+        // Add click event listener to the body
+        document.body.addEventListener("click", switchScreens);
+    </script>
 </body>
 </html>
