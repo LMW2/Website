@@ -3,113 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Game</title>
+    <title>Flappy Bird</title>
     <style>
         canvas {
             border: 1px solid black;
+            background-color: #9dd9f9;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
+
     <script>
-        // Get the canvas element and its context
         var canvas = document.getElementById("gameCanvas");
         var ctx = canvas.getContext("2d");
 
-        // Define initial position and size of player
-        var playerX = canvas.width / 2;
-        var playerY = canvas.height - 30;
-        var playerWidth = 20;
-        var playerHeight = 20;
+        var bird = {
+            x: 50,
+            y: canvas.height / 2,
+            radius: 10,
+            gravity: 0.2,
+            velocity: 0
+        };
 
-        // Define initial position and size of ball
-        var ballX = canvas.width / 2;
-        var ballY = canvas.height - 50;
-        var ballRadius = 10;
-        var dx = 2;
-        var dy = -2;
+        var pipes = [];
+        var gap = 100;
+        var pipeWidth = 30;
+        var pipeSpeed = 2;
+        var pipeInterval = 150;
+        var score = 0;
 
-        // Define keyboard controls
-        var rightPressed = false;
-        var leftPressed = false;
-
-        // Event listeners for key press and release
-        document.addEventListener("keydown", keyDownHandler, false);
-        document.addEventListener("keyup", keyUpHandler, false);
-
-        // Key press handler
-        function keyDownHandler(e) {
-            if (e.key == "Right" || e.key == "ArrowRight") {
-                rightPressed = true;
-            } else if (e.key == "Left" || e.key == "ArrowLeft") {
-                leftPressed = true;
-            }
-        }
-
-        // Key release handler
-        function keyUpHandler(e) {
-            if (e.key == "Right" || e.key == "ArrowRight") {
-                rightPressed = false;
-            } else if (e.key == "Left" || e.key == "ArrowLeft") {
-                leftPressed = false;
-            }
-        }
-
-        // Draw the player
-        function drawPlayer() {
+        function drawBird() {
             ctx.beginPath();
-            ctx.rect(playerX, playerY, playerWidth, playerHeight);
-            ctx.fillStyle = "#0095DD";
+            ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "yellow";
             ctx.fill();
             ctx.closePath();
         }
 
-        // Draw the ball
-        function drawBall() {
+        function drawPipe(x, height) {
             ctx.beginPath();
-            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#0095DD";
+            ctx.rect(x, 0, pipeWidth, height);
+            ctx.rect(x, height + gap, pipeWidth, canvas.height - height - gap);
+            ctx.fillStyle = "green";
             ctx.fill();
             ctx.closePath();
         }
 
-        // Main game loop
+        function drawScore() {
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("Score: " + score, 10, 30);
+        }
+
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawPlayer();
-            drawBall();
 
-            // Move the player based on key presses
-            if (rightPressed && playerX < canvas.width - playerWidth) {
-                playerX += 7;
-            } else if (leftPressed && playerX > 0) {
-                playerX -= 7;
+            bird.velocity += bird.gravity;
+            bird.y += bird.velocity;
+
+            drawBird();
+
+            if (bird.y - bird.radius <= 0 || bird.y + bird.radius >= canvas.height) {
+                gameOver();
             }
 
-            // Move the ball
-            ballX += dx;
-            ballY += dy;
-
-            // Bounce the ball off the walls
-            if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
-                dx = -dx;
+            if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - pipeInterval) {
+                pipes.push({
+                    x: canvas.width,
+                    height: Math.floor(Math.random() * (canvas.height - gap - 50)) + 50
+                });
             }
-            if (ballY + dy < ballRadius) {
-                dy = -dy;
-            } else if (ballY + dy > canvas.height - ballRadius) {
-                if (ballX > playerX && ballX < playerX + playerWidth) {
-                    dy = -dy;
-                } else {
-                    // Game over
-                    alert("Game Over");
-                    document.location.reload();
+
+            for (var i = 0; i < pipes.length; i++) {
+                drawPipe(pipes[i].x, pipes[i].height);
+                pipes[i].x -= pipeSpeed;
+
+                if (pipes[i].x + pipeWidth === bird.x - bird.radius) {
+                    score++;
+                }
+
+                if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + pipeWidth &&
+                    (bird.y - bird.radius < pipes[i].height || bird.y + bird.radius > pipes[i].height + gap)) {
+                    gameOver();
+                }
+
+                if (pipes[i].x + pipeWidth < 0) {
+                    pipes.splice(i, 1);
                 }
             }
+
+            drawScore();
+
+            requestAnimationFrame(draw);
         }
 
-        setInterval(draw, 10); // Run the draw function every 10 milliseconds
+        function gameOver() {
+            alert("Game Over! Your score: " + score);
+            window.location.reload();
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.keyCode === 32) { // spacebar
+                bird.velocity = -5;
+            }
+        });
+
+        draw();
     </script>
 </body>
 </html>
