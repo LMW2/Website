@@ -5,16 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird</title>
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
         canvas {
-            border: 1px solid black;
-            background-color: #9dd9f9;
             display: block;
-            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            background-color: #9dd9f9;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <canvas id="gameCanvas"></canvas>
 
     <script>
         var canvas = document.getElementById("gameCanvas");
@@ -59,6 +67,9 @@
         }
 
         function draw() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             bird.velocity += bird.gravity;
@@ -109,6 +120,11 @@
             if (event.keyCode === 32) { // spacebar
                 bird.velocity = -5;
             }
+        });
+
+        window.addEventListener("resize", function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
 
         draw();
