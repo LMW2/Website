@@ -3,9 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Levi's Site</title>
+    <title>Simple Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
-    <h1>Levi's Site!</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    
+    <script>
+        // Get the canvas element and its context
+        var canvas = document.getElementById("gameCanvas");
+        var ctx = canvas.getContext("2d");
+
+        // Define initial position and size of player
+        var playerX = canvas.width / 2;
+        var playerY = canvas.height - 30;
+        var playerWidth = 20;
+        var playerHeight = 20;
+
+        // Define initial position and size of ball
+        var ballX = canvas.width / 2;
+        var ballY = canvas.height - 50;
+        var ballRadius = 10;
+        var dx = 2;
+        var dy = -2;
+
+        // Draw the player
+        function drawPlayer() {
+            ctx.beginPath();
+            ctx.rect(playerX, playerY, playerWidth, playerHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Draw the ball
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Main game loop
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawBall();
+
+            // Move the ball
+            ballX += dx;
+            ballY += dy;
+
+            // Bounce the ball off the walls
+            if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
+                dx = -dx;
+            }
+            if (ballY + dy < ballRadius) {
+                dy = -dy;
+            } else if (ballY + dy > canvas.height - ballRadius) {
+                if (ballX > playerX && ballX < playerX + playerWidth) {
+                    dy = -dy;
+                } else {
+                    // Game over
+                    alert("Game Over");
+                    document.location.reload();
+                }
+            }
+        }
+
+        setInterval(draw, 10); // Run the draw function every 10 milliseconds
+    </script>
 </body>
 </html>
