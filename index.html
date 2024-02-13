@@ -1,196 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tetris</title>
-  <style>
-    canvas {
-      border: 2px solid black;
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Levi's Site Animation</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  #animation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  #animation {
+    font-size: 48px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+</style>
 </head>
 <body>
-  <canvas id="canvas" width="240" height="400"></canvas>
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const ROWS = 20;
-    const COLS = 10;
-    const BLOCK_SIZE = 20;
-    const board = [];
+<div id="animation-container">
+  <div id="animation">L</div>
+  <div id="animation">e</div>
+  <div id="animation">v</div>
+  <div id="animation">i</div>
+  <div id="animation">'</div>
+  <div id="animation">s</div>
+  <div id="animation">&nbsp;</div>
+  <div id="animation">S</div>
+  <div id="animation">i</div>
+  <div id="animation">t</div>
+  <div id="animation">e</div>
+</div>
 
-    for (let row = 0; row < ROWS; row++) {
-      board[row] = [];
-      for (let col = 0; col < COLS; col++) {
-        board[row][col] = 0;
-      }
-    }
+<script>
+  const letters = document.querySelectorAll('#animation');
 
-    function drawSquare(x, y, color) {
-      ctx.fillStyle = color;
-      ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-      ctx.strokeStyle = 'black';
-      ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-    }
-
-    function drawBoard() {
-      for (let row = 0; row < ROWS; row++) {
-        for (let col = 0; col < COLS; col++) {
-          if (board[row][col]) {
-            drawSquare(col, row, board[row][col]);
-          } else {
-            drawSquare(col, row, 'white');
-          }
-        }
-      }
-    }
-
-    function clearBoard() {
-      for (let row = 0; row < ROWS; row++) {
-        for (let col = 0; col < COLS; col++) {
-          board[row][col] = 0;
-        }
-      }
-    }
-
-    const pieces = [
-      [[1, 1, 1, 1]],
-      [[1, 1, 1], [0, 1, 0]],
-      [[1, 1, 1], [1, 0, 0]],
-      [[1, 1], [1, 1]],
-      [[1, 1, 0], [0, 1, 1]],
-      [[0, 1, 1], [1, 1, 0]],
-      [[1, 0], [1, 0], [1, 1]]
-    ];
-
-    function drawPiece(piece, x, y, color) {
-      for (let row = 0; row < piece.length; row++) {
-        for (let col = 0; col < piece[row].length; col++) {
-          if (piece[row][col]) {
-            drawSquare(x + col, y + row, color);
-          }
-        }
-      }
-    }
-
-    function collide(board, piece, x, y) {
-      for (let row = 0; row < piece.length; row++) {
-        for (let col = 0; col < piece[row].length; col++) {
-          if (piece[row][col] && (board[row + y] && board[row + y][col + x]) !== 0) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    function rotate(piece) {
-      const newPiece = [];
-      for (let col = 0; col < piece[0].length; col++) {
-        newPiece[col] = [];
-        for (let row = piece.length - 1; row >= 0; row--) {
-          newPiece[col][piece.length - 1 - row] = piece[row][col];
-        }
-      }
-      return newPiece;
-    }
-
-    function draw() {
-      drawBoard();
-      drawPiece(currentPiece, currentX, currentY, currentColor);
-    }
-
-    let currentPiece = pieces[Math.floor(Math.random() * pieces.length)];
-    let currentColor = 'red';
-    let currentX = 3;
-    let currentY = 0;
-
-    function drop() {
-      if (!collide(board, currentPiece, currentX, currentY + 1)) {
-        currentY++;
-      } else {
-        merge();
-        clearLines();
-        currentPiece = pieces[Math.floor(Math.random() * pieces.length)];
-        currentColor = `#${Math.floor(Math.random()*16777215).toString(16)}`;
-        currentX = 3;
-        currentY = 0;
-        if (collide(board, currentPiece, currentX, currentY)) {
-          clearBoard();
-        }
-      }
-    }
-
-    function merge() {
-      for (let row = 0; row < currentPiece.length; row++) {
-        for (let col = 0; col < currentPiece[row].length; col++) {
-          if (currentPiece[row][col]) {
-            board[row + currentY][col + currentX] = currentColor;
-          }
-        }
-      }
-    }
-
-    function clearLines() {
-      for (let row = ROWS - 1; row >= 0; row--) {
-        let isRowFull = true;
-        for (let col = 0; col < COLS; col++) {
-          if (board[row][col] === 0) {
-            isRowFull = false;
-            break;
-          }
-        }
-        if (isRowFull) {
-          for (let r = row; r > 0; r--) {
-            for (let c = 0; c < COLS; c++) {
-              board[r][c] = board[r - 1][c];
-            }
-          }
-          row++;
-        }
-      }
-    }
-
-    function move(dir) {
-      if (!collide(board, currentPiece, currentX + dir, currentY)) {
-        currentX += dir;
-      }
-    }
-
-    function rotatePiece() {
-      const rotatedPiece = rotate(currentPiece);
-      if (!collide(board, rotatedPiece, currentX, currentY)) {
-        currentPiece = rotatedPiece;
-      }
-    }
-
-    function gameLoop() {
-      drop();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    document.addEventListener('keydown', e => {
-      switch (e.code) {
-        case 'ArrowLeft':
-          move(-1);
-          break;
-        case 'ArrowRight':
-          move(1);
-          break;
-        case 'ArrowDown':
-          drop();
-          break;
-        case 'ArrowUp':
-          rotatePiece();
-          break;
-      }
+  setTimeout(() => {
+    letters.forEach((letter, index) => {
+      letter.style.opacity = 1;
+      letter.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px)`;
+      setTimeout(() => {
+        letter.style.transform = `translate(0, 0)`;
+      }, index * 100);
     });
+  }, 500);
 
-    gameLoop();
-  </script>
+</script>
 </body>
 </html>
