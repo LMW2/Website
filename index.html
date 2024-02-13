@@ -36,8 +36,8 @@
         var minGapHeight = 150;
         var maxGapHeight = 300;
         var obstacleSpawnInterval = 2000;
-        var obstacleSpawnSpeedIncrease = 0.05; // Increase obstacle spawn speed by 0.05 every second
-        var obstacleSpeedIncrease = 0.02; // Increase obstacle speed by 0.02 every second
+        var obstacleSpawnSpeedIncrease = 0.005; // Increase obstacle spawn speed by 0.005 every frame
+        var obstacleSpeedIncrease = 0.001; // Increase obstacle speed by 0.001 every frame
         var lastObstacleTime = 0;
         var score = 0;
 
@@ -104,11 +104,20 @@
         }
 
         function updateDifficulty() {
-            var currentTime = new Date().getTime();
-            if (currentTime - lastObstacleTime > 1000) { // Check every second
-                obstacleSpawnInterval -= obstacleSpawnSpeedIncrease * 1000;
-                obstacleSpeed += obstacleSpeedIncrease;
-                lastObstacleTime = currentTime;
+            // Increase obstacle spawn speed
+            obstacleSpawnInterval -= obstacleSpawnSpeedIncrease;
+
+            // Ensure obstacle spawn speed doesn't exceed a maximum value
+            if (obstacleSpawnInterval < 500) {
+                obstacleSpawnInterval = 500;
+            }
+
+            // Increase obstacle speed
+            obstacleSpeed += obstacleSpeedIncrease;
+
+            // Ensure obstacle speed doesn't exceed a maximum value
+            if (obstacleSpeed > 5) {
+                obstacleSpeed = 5;
             }
         }
 
