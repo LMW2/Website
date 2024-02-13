@@ -34,6 +34,7 @@
         var gapHeight = 200;
         var obstacleSpeed = 2;
         var lastObstacleTime = 0;
+        var score = 0;
 
         function drawPlane() {
             ctx.fillStyle = "blue";
@@ -95,9 +96,24 @@
             }
         }
 
+        function updateScore() {
+            for (var i = 0; i < obstacles.length; i++) {
+                var obstacle = obstacles[i];
+                if (obstacle.x + obstacleWidth < plane.x) {
+                    score++; // Increment score when passing an obstacle
+                }
+            }
+        }
+
         function gameOver() {
-            alert("Game Over!");
+            alert("Game Over! Your score: " + score);
             location.reload(); // Reload the page to restart the game
+        }
+
+        function drawScore() {
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("Score: " + score, 10, 30);
         }
 
         function draw() {
@@ -105,10 +121,12 @@
 
             drawPlane();
             drawObstacles();
+            drawScore();
 
             updatePlane();
             updateObstacles();
             checkCollision();
+            updateScore();
 
             requestAnimationFrame(draw);
         }
