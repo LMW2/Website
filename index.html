@@ -4,97 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website</title>
-    <link rel="stylesheet" href="styles.css"> <!-- External CSS file for styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
-        <div class="container">
-            <h1>Your Website</h1>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#portfolio">Portfolio</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
+        <h1>Your Website</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Sections</a>
+                    <div class="dropdown-content">
+                        <a href="#about">About</a>
+                        <a href="#services">Services</a>
+                        <a href="#portfolio">Portfolio</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                </li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
+    <section id="home">
         <div class="container">
             <h2>Welcome to Your Website</h2>
-            <p>Your captivating tagline goes here.</p>
-            <a href="#contact" class="btn">Get Started</a>
+            <p>This is the homepage of your website.</p>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
+    <section id="about">
         <div class="container">
             <h2>About Us</h2>
-            <p>Description of your company or yourself goes here.</p>
+            <p>About us content goes here.</p>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
+    <section id="services">
         <div class="container">
             <h2>Our Services</h2>
-            <div class="service">
-                <h3>Service Title 1</h3>
-                <p>Description of the service goes here.</p>
-            </div>
-            <div class="service">
-                <h3>Service Title 2</h3>
-                <p>Description of the service goes here.</p>
-            </div>
-            <!-- Add more service divs as needed -->
+            <p>Our services content goes here.</p>
         </div>
     </section>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
+    <section id="portfolio">
         <div class="container">
             <h2>Our Portfolio</h2>
-            <div class="portfolio-item">
-                <!-- Portfolio item goes here (image, title, description) -->
-            </div>
-            <!-- Add more portfolio item divs as needed -->
+            <p>Our portfolio content goes here.</p>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <h2>Testimonials</h2>
-            <div class="testimonial">
-                <blockquote>
-                    Testimonial text goes here.
-                </blockquote>
-                <cite>Client Name</cite>
-            </div>
-            <!-- Add more testimonial divs as needed -->
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <section id="contact">
         <div class="container">
             <h2>Contact Us</h2>
-            <p>Contact form or contact details go here.</p>
+            <p>Contact us content goes here.</p>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your Website. All rights reserved.</p>
-        </div>
-    </footer>
 </body>
 </html>
