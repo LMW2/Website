@@ -121,6 +121,19 @@
             }
         }
 
+        function checkCollision() {
+            for (var i = 0; i < obstacles.length; i++) {
+                var obstacle = obstacles[i];
+                if (
+                    plane.x < obstacle.x + obstacleWidth &&
+                    plane.x + plane.width > obstacle.x &&
+                    (plane.y < obstacle.topHeight || plane.y + plane.height > obstacle.topHeight + gapHeight)
+                ) {
+                    gameOver();
+                }
+            }
+        }
+
         function gameOver() {
             alert("Game Over! Your score: " + score);
             location.reload(); // Reload the page to restart the game
@@ -142,6 +155,7 @@
             updatePlane();
             updateObstacles();
             updateScore();
+            checkCollision(); // Check for collisions
 
             requestAnimationFrame(draw);
         }
