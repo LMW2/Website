@@ -5,31 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
         canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+            border: 1px solid black;
             background-color: #9dd9f9;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
 
     <script>
         var canvas = document.getElementById("gameCanvas");
         var ctx = canvas.getContext("2d");
-
-        var originalWidth = 600; // Original canvas width
-        var originalHeight = 400; // Original canvas height
 
         var bird = {
             x: 50,
@@ -40,9 +29,8 @@
         };
 
         var pipes = [];
-        var gapVertical = 150; // Increased gap between top and bottom pipes
-        var gapHorizontal = 200; // Increased gap between pipes horizontally
-        var pipeWidth = 30; // Width of the pipes
+        var gap = 100;
+        var pipeWidth = 30;
         var pipeSpeed = 2;
         var pipeInterval = 150;
         var score = 0;
@@ -58,7 +46,7 @@
         function drawPipe(x, height) {
             ctx.beginPath();
             ctx.rect(x, 0, pipeWidth, height);
-            ctx.rect(x, height + gapVertical, pipeWidth, canvas.height - height - gapVertical);
+            ctx.rect(x, height + gap, pipeWidth, canvas.height - height - gap);
             ctx.fillStyle = "green";
             ctx.fill();
             ctx.closePath();
@@ -71,20 +59,6 @@
         }
 
         function draw() {
-            // Maintain aspect ratio
-            var aspectRatio = originalWidth / originalHeight;
-            var newWidth = window.innerWidth;
-            var newHeight = window.innerHeight;
-
-            if (newWidth / newHeight > aspectRatio) {
-                newWidth = newHeight * aspectRatio;
-            } else {
-                newHeight = newWidth / aspectRatio;
-            }
-
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             bird.velocity += bird.gravity;
@@ -99,7 +73,7 @@
             if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - pipeInterval) {
                 pipes.push({
                     x: canvas.width,
-                    height: Math.floor(Math.random() * (canvas.height - gapVertical - 50)) + 50
+                    height: Math.floor(Math.random() * (canvas.height - gap - 50)) + 50
                 });
             }
 
@@ -112,7 +86,7 @@
                 }
 
                 if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + pipeWidth &&
-                    (bird.y - bird.radius < pipes[i].height || bird.y + bird.radius > pipes[i].height + gapVertical)) {
+                    (bird.y - bird.radius < pipes[i].height || bird.y + bird.radius > pipes[i].height + gap)) {
                     gameOver();
                 }
 
@@ -136,8 +110,6 @@
                 bird.velocity = -5;
             }
         });
-
-        window.addEventListener("resize", draw);
 
         draw();
     </script>
