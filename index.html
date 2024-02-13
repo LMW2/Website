@@ -161,7 +161,7 @@
         }
 
         document.addEventListener("keydown", function(event) {
-            if (event.keyCode === 32) { // Spacebar to make the plane fly up
+            if (event.code === "Space") { // Spacebar to make the plane fly up
                 plane.velocityY = plane.lift;
             }
         });
