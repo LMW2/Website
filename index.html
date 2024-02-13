@@ -33,6 +33,11 @@
         var obstacleWidth = 40;
         var gapHeight = 200;
         var obstacleSpeed = 2;
+        var minGapHeight = 150;
+        var maxGapHeight = 300;
+        var obstacleSpawnInterval = 2000;
+        var obstacleSpawnSpeedIncrease = 0.05; // Increase obstacle spawn speed by 0.05 every second
+        var obstacleSpeedIncrease = 0.02; // Increase obstacle speed by 0.02 every second
         var lastObstacleTime = 0;
         var score = 0;
 
@@ -67,13 +72,17 @@
         }
 
         function updateObstacles() {
+            updateDifficulty(); // Update game difficulty
+
+            // Generate obstacles
             var currentTime = new Date().getTime();
-            if (currentTime - lastObstacleTime > 2000) { // Adjust obstacle spawning rate
-                var randomHeight = Math.floor(Math.random() * (canvas.height - gapHeight));
+            if (currentTime - lastObstacleTime > obstacleSpawnInterval) {
+                var randomHeight = Math.floor(Math.random() * (maxGapHeight - minGapHeight)) + minGapHeight;
                 obstacles.push({ x: canvas.width, topHeight: randomHeight });
                 lastObstacleTime = currentTime;
             }
 
+            // Update obstacle positions
             for (var i = 0; i < obstacles.length; i++) {
                 obstacles[i].x -= obstacleSpeed;
 
@@ -85,23 +94,21 @@
             }
         }
 
-        function checkCollision() {
-            for (var i = 0; i < obstacles.length; i++) {
-                var obstacle = obstacles[i];
-                if (plane.x < obstacle.x + obstacleWidth &&
-                    plane.x + plane.width > obstacle.x &&
-                    (plane.y < obstacle.topHeight || plane.y + plane.height > obstacle.topHeight + gapHeight)) {
-                    gameOver();
-                }
-            }
-        }
-
         function updateScore() {
             for (var i = 0; i < obstacles.length; i++) {
                 var obstacle = obstacles[i];
                 if (obstacle.x + obstacleWidth < plane.x) {
                     score++; // Increment score when passing an obstacle
                 }
+            }
+        }
+
+        function updateDifficulty() {
+            var currentTime = new Date().getTime();
+            if (currentTime - lastObstacleTime > 1000) { // Check every second
+                obstacleSpawnInterval -= obstacleSpawnSpeedIncrease * 1000;
+                obstacleSpeed += obstacleSpeedIncrease;
+                lastObstacleTime = currentTime;
             }
         }
 
@@ -125,7 +132,6 @@
 
             updatePlane();
             updateObstacles();
-            checkCollision();
             updateScore();
 
             requestAnimationFrame(draw);
