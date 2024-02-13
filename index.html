@@ -1,172 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Plane</title>
-    <style>
-        canvas {
-            border: 1px solid black;
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Bird</title>
+  <style>
+    canvas {
+      border: 2px solid black;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <canvas id="canvas" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-    <script>
-        var canvas = document.getElementById("gameCanvas");
-        var ctx = canvas.getContext("2d");
+    // Bird properties
+    const bird = {
+      x: 50,
+      y: canvas.height / 2,
+      radius: 20,
+      velocity: 0,
+      gravity: 0.7,
+      jumpStrength: 10,
+    };
 
-        var plane = {
-            x: 50,
-            y: canvas.height / 2,
-            width: 40,
-            height: 20,
-            velocityY: 0,
-            gravity: 0.2,
-            lift: -5
-        };
+    // Pipe properties
+    let pipes = [];
+    const pipeWidth = 50;
+    const pipeGap = 150;
+    let score = 0;
+    let gameSpeed = 2;
 
-        var obstacles = [];
-        var obstacleWidth = 40;
-        var gapHeight = 200;
-        var obstacleSpeed = 2;
-        var minGapHeight = 150;
-        var maxGapHeight = 300;
-        var obstacleSpawnInterval = 2000;
-        var obstacleSpawnSpeedIncrease = 0.01; // Increase obstacle spawn speed by 0.01 every frame
-        var obstacleSpeedIncrease = 0.005; // Increase obstacle speed by 0.005 every frame
-        var lastObstacleTime = 0;
-        var score = 0;
+    // Function to generate pipes
+    function generatePipes() {
+      const pipeHeight = Math.random() * (canvas.height - pipeGap * 2) + pipeGap;
+      pipes.push({
+        x: canvas.width,
+        y: 0,
+        height: pipeHeight,
+      });
+      pipes.push({
+        x: canvas.width,
+        y: pipeHeight + pipeGap,
+        height: canvas.height - pipeHeight - pipeGap,
+      });
+    }
 
-        function drawPlane() {
-            ctx.fillStyle = "blue";
-            ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
+    // Function to draw bird
+    function drawBird() {
+      ctx.beginPath();
+      ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Function to draw pipes
+    function drawPipes() {
+      ctx.fillStyle = 'green';
+      pipes.forEach(pipe => {
+        ctx.fillRect(pipe.x, pipe.y, pipeWidth, pipe.height);
+      });
+    }
+
+    // Function to move bird
+    function moveBird() {
+      bird.velocity += bird.gravity;
+      bird.y += bird.velocity;
+    }
+
+    // Function to move pipes
+    function movePipes() {
+      pipes.forEach(pipe => {
+        pipe.x -= gameSpeed;
+      });
+      // Remove pipes that are out of screen
+      pipes = pipes.filter(pipe => pipe.x + pipeWidth > 0);
+    }
+
+    // Function to check collisions
+    function checkCollisions() {
+      if (bird.y - bird.radius < 0 || bird.y + bird.radius > canvas.height) {
+        gameOver();
+      }
+      pipes.forEach(pipe => {
+        if (bird.x + bird.radius > pipe.x && bird.x - bird.radius < pipe.x + pipeWidth && (bird.y - bird.radius < pipe.y || bird.y + bird.radius > pipe.y + pipe.height)) {
+          gameOver();
         }
-
-        function drawObstacles() {
-            ctx.fillStyle = "green";
-            for (var i = 0; i < obstacles.length; i++) {
-                var obstacle = obstacles[i];
-                ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.topHeight);
-                ctx.fillRect(obstacle.x, obstacle.topHeight + gapHeight, obstacleWidth, canvas.height - obstacle.topHeight - gapHeight);
-            }
+        if (bird.x === pipe.x + pipeWidth) {
+          score++;
         }
+      });
+    }
 
-        function updatePlane() {
-            plane.velocityY += plane.gravity;
-            plane.y += plane.velocityY;
+    // Function to handle game over
+    function gameOver() {
+      alert(`Game Over! Your score is ${score}`);
+      resetGame();
+    }
 
-            // Keep the plane within the canvas
-            if (plane.y <= 0) {
-                plane.y = 0;
-                plane.velocityY = 0;
-            }
-            if (plane.y + plane.height >= canvas.height) {
-                plane.y = canvas.height - plane.height;
-                plane.velocityY = 0;
-                gameOver();
-            }
-        }
+    // Function to reset the game
+    function resetGame() {
+      bird.y = canvas.height / 2;
+      pipes = [];
+      score = 0;
+      gameSpeed = 2;
+    }
 
-        function updateObstacles() {
-            updateDifficulty(); // Update game difficulty
+    // Main game loop
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Generate obstacles
-            var currentTime = new Date().getTime();
-            if (currentTime - lastObstacleTime > obstacleSpawnInterval) {
-                var randomHeight = Math.floor(Math.random() * (maxGapHeight - minGapHeight)) + minGapHeight;
-                obstacles.push({ x: canvas.width, topHeight: randomHeight });
-                lastObstacleTime = currentTime;
-            }
+      moveBird();
+      movePipes();
+      checkCollisions();
 
-            // Update obstacle positions
-            for (var i = 0; i < obstacles.length; i++) {
-                obstacles[i].x -= obstacleSpeed;
+      drawBird();
+      drawPipes();
 
-                // Remove obstacles that have moved off-screen
-                if (obstacles[i].x + obstacleWidth < 0) {
-                    obstacles.splice(i, 1);
-                    i--;
-                }
-            }
-        }
+      requestAnimationFrame(gameLoop);
+    }
 
-        function updateScore() {
-            for (var i = 0; i < obstacles.length; i++) {
-                var obstacle = obstacles[i];
-                if (obstacle.x + obstacleWidth < plane.x) {
-                    score++; // Increment score when passing an obstacle
-                }
-            }
-        }
+    // Start the game
+    generatePipes();
+    gameLoop();
 
-        function updateDifficulty() {
-            // Increase obstacle spawn speed
-            obstacleSpawnInterval -= obstacleSpawnSpeedIncrease;
+    // Event listener for jumping
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space') {
+        bird.velocity = -bird.jumpStrength;
+      }
+    });
 
-            // Ensure obstacle spawn speed doesn't exceed a maximum value
-            if (obstacleSpawnInterval < 500) {
-                obstacleSpawnInterval = 500;
-            }
+    // Increase game difficulty over time
+    setInterval(() => {
+      gameSpeed += 0.5;
+    }, 5000);
 
-            // Increase obstacle speed
-            obstacleSpeed += obstacleSpeedIncrease;
-
-            // Ensure obstacle speed doesn't exceed a maximum value
-            if (obstacleSpeed > 5) {
-                obstacleSpeed = 5;
-            }
-        }
-
-        function checkCollision() {
-            for (var i = 0; i < obstacles.length; i++) {
-                var obstacle = obstacles[i];
-                if (
-                    plane.x < obstacle.x + obstacleWidth &&
-                    plane.x + plane.width > obstacle.x &&
-                    (plane.y < obstacle.topHeight || plane.y + plane.height > obstacle.topHeight + gapHeight)
-                ) {
-                    gameOver();
-                }
-            }
-        }
-
-        function gameOver() {
-            alert("Game Over! Your score: " + score);
-            location.reload(); // Reload the page to restart the game
-        }
-
-        function drawScore() {
-            ctx.font = "20px Arial";
-            ctx.fillStyle = "black";
-            ctx.fillText("Score: " + score, 10, 30);
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            drawPlane();
-            drawObstacles();
-            drawScore();
-
-            updatePlane();
-            updateObstacles();
-            updateScore();
-            checkCollision(); // Check for collisions
-
-            requestAnimationFrame(draw);
-        }
-
-        document.addEventListener("keydown", function(event) {
-            if (event.code === "Space") { // Spacebar to make the plane fly up
-                plane.velocityY = plane.lift;
-            }
-        });
-
-        draw();
-    </script>
+  </script>
 </body>
 </html>
