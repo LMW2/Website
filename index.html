@@ -3,111 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird</title>
+    <title>Color Switch Game</title>
     <style>
         canvas {
             border: 1px solid black;
-            background-color: #9dd9f9;
             display: block;
             margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="480" height="320"></canvas>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
 
     <script>
         var canvas = document.getElementById("gameCanvas");
         var ctx = canvas.getContext("2d");
 
-        var bird = {
-            x: 50,
+        var ball = {
+            x: canvas.width / 2,
             y: canvas.height / 2,
             radius: 10,
-            gravity: 0.2,
-            velocity: 0
+            velocityY: -5,
+            color: "#FF0000" // Initial color
         };
 
-        var pipes = [];
-        var gap = 100;
-        var pipeWidth = 30;
-        var pipeSpeed = 2;
-        var pipeInterval = 150;
-        var score = 0;
+        var obstacles = [];
+        var obstacleSpeed = 2;
+        var obstacleTypes = ["#00FF00", "#0000FF", "#FFFF00"]; // Colors of obstacles
 
-        function drawBird() {
+        function drawBall() {
             ctx.beginPath();
-            ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "yellow";
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
             ctx.fill();
             ctx.closePath();
         }
 
-        function drawPipe(x, height) {
-            ctx.beginPath();
-            ctx.rect(x, 0, pipeWidth, height);
-            ctx.rect(x, height + gap, pipeWidth, canvas.height - height - gap);
-            ctx.fillStyle = "green";
-            ctx.fill();
-            ctx.closePath();
+        function drawObstacles() {
+            for (var i = 0; i < obstacles.length; i++) {
+                var obstacle = obstacles[i];
+                ctx.beginPath();
+                ctx.arc(obstacle.x, obstacle.y, obstacle.radius, 0, Math.PI * 2);
+                ctx.fillStyle = obstacle.color;
+                ctx.fill();
+                ctx.closePath();
+            }
         }
 
-        function drawScore() {
-            ctx.font = "20px Arial";
-            ctx.fillStyle = "black";
-            ctx.fillText("Score: " + score, 10, 30);
+        function updateBall() {
+            ball.y += ball.velocityY;
+
+            if (ball.y + ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+                gameOver();
+            }
+        }
+
+        function updateObstacles() {
+            for (var i = 0; i < obstacles.length; i++) {
+                obstacles[i].y += obstacleSpeed;
+
+                if (obstacles[i].y > canvas.height + obstacles[i].radius) {
+                    obstacles.splice(i, 1); // Remove obstacles that are out of the canvas
+                }
+            }
+
+            if (Math.random() < 0.01) { // Add new obstacle occasionally
+                var randomX = Math.random() * canvas.width;
+                var randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                obstacles.push({ x: randomX, y: -30, radius: 15, color: randomType });
+            }
+        }
+
+        function checkCollision() {
+            for (var i = 0; i < obstacles.length; i++) {
+                var dy = ball.y - obstacles[i].y;
+                var distance = Math.sqrt(dy * dy);
+
+                if (distance < ball.radius + obstacles[i].radius) {
+                    if (ball.color === obstacles[i].color) {
+                        // Pass through obstacle of the same color
+                        obstacles.splice(i, 1);
+                    } else {
+                        gameOver();
+                    }
+                }
+            }
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            bird.velocity += bird.gravity;
-            bird.y += bird.velocity;
+            drawBall();
+            drawObstacles();
 
-            drawBird();
-
-            if (bird.y - bird.radius <= 0 || bird.y + bird.radius >= canvas.height) {
-                gameOver();
-            }
-
-            if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - pipeInterval) {
-                pipes.push({
-                    x: canvas.width,
-                    height: Math.floor(Math.random() * (canvas.height - gap - 50)) + 50
-                });
-            }
-
-            for (var i = 0; i < pipes.length; i++) {
-                drawPipe(pipes[i].x, pipes[i].height);
-                pipes[i].x -= pipeSpeed;
-
-                if (pipes[i].x + pipeWidth === bird.x - bird.radius) {
-                    score++;
-                }
-
-                if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + pipeWidth &&
-                    (bird.y - bird.radius < pipes[i].height || bird.y + bird.radius > pipes[i].height + gap)) {
-                    gameOver();
-                }
-
-                if (pipes[i].x + pipeWidth < 0) {
-                    pipes.splice(i, 1);
-                }
-            }
-
-            drawScore();
+            updateBall();
+            updateObstacles();
+            checkCollision();
 
             requestAnimationFrame(draw);
         }
 
         function gameOver() {
-            alert("Game Over! Your score: " + score);
-            window.location.reload();
+            alert("Game Over!");
+            location.reload(); // Reload the page to restart the game
         }
 
         document.addEventListener("keydown", function(event) {
-            if (event.keyCode === 32) { // spacebar
-                bird.velocity = -5;
+            if (event.keyCode === 32) { // Spacebar to change ball color
+                var currentIndex = obstacleTypes.indexOf(ball.color);
+                var newIndex = (currentIndex + 1) % obstacleTypes.length;
+                ball.color = obstacleTypes[newIndex];
             }
         });
 
