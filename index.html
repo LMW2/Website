@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Switch Game</title>
+    <title>Flappy Plane</title>
     <style>
         canvas {
             border: 1px solid black;
@@ -19,71 +19,65 @@
         var canvas = document.getElementById("gameCanvas");
         var ctx = canvas.getContext("2d");
 
-        var ball = {
-            x: canvas.width / 2,
+        var plane = {
+            x: 50,
             y: canvas.height / 2,
-            radius: 10,
+            width: 40,
+            height: 20,
             velocityY: 0,
-            jumpHeight: -5,
-            colorIndex: 0,
-            colors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"]
+            gravity: 0.2,
+            lift: -5
         };
 
         var obstacles = [];
+        var obstacleWidth = 40;
+        var gapHeight = 200;
         var obstacleSpeed = 2;
-        var obstacleInterval = 1000; // Adjust obstacle spawning rate
         var lastObstacleTime = 0;
 
-        function drawBall() {
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fillStyle = ball.colors[ball.colorIndex];
-            ctx.fill();
-            ctx.closePath();
+        function drawPlane() {
+            ctx.fillStyle = "blue";
+            ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
         }
 
         function drawObstacles() {
+            ctx.fillStyle = "green";
             for (var i = 0; i < obstacles.length; i++) {
                 var obstacle = obstacles[i];
-                ctx.beginPath();
-                ctx.arc(obstacle.x, obstacle.y, obstacle.radius, 0, Math.PI * 2);
-                ctx.fillStyle = obstacle.color;
-                ctx.fill();
-                ctx.closePath();
+                ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.topHeight);
+                ctx.fillRect(obstacle.x, obstacle.topHeight + gapHeight, obstacleWidth, canvas.height - obstacle.topHeight - gapHeight);
             }
         }
 
-        function updateBall() {
-            ball.y += ball.velocityY;
-            ball.velocityY += 0.1; // Gravity
+        function updatePlane() {
+            plane.velocityY += plane.gravity;
+            plane.y += plane.velocityY;
 
-            // Prevent the ball from falling off the bottom of the screen
-            if (ball.y + ball.radius > canvas.height) {
-                ball.y = canvas.height - ball.radius;
-                ball.velocityY = 0;
+            // Keep the plane within the canvas
+            if (plane.y <= 0) {
+                plane.y = 0;
+                plane.velocityY = 0;
             }
-
-            // Prevent the ball from going above the top of the screen
-            if (ball.y - ball.radius < 0) {
-                ball.y = ball.radius;
-                ball.velocityY = 0;
+            if (plane.y + plane.height >= canvas.height) {
+                plane.y = canvas.height - plane.height;
+                plane.velocityY = 0;
+                gameOver();
             }
         }
 
         function updateObstacles() {
             var currentTime = new Date().getTime();
-            if (currentTime - lastObstacleTime > obstacleInterval) {
-                var randomX = Math.random() * canvas.width;
-                var randomColorIndex = Math.floor(Math.random() * ball.colors.length);
-                obstacles.push({ x: randomX, y: -30, radius: 15, color: ball.colors[randomColorIndex] });
+            if (currentTime - lastObstacleTime > 2000) { // Adjust obstacle spawning rate
+                var randomHeight = Math.floor(Math.random() * (canvas.height - gapHeight));
+                obstacles.push({ x: canvas.width, topHeight: randomHeight });
                 lastObstacleTime = currentTime;
             }
 
             for (var i = 0; i < obstacles.length; i++) {
-                obstacles[i].y += obstacleSpeed;
+                obstacles[i].x -= obstacleSpeed;
 
-                // Remove obstacles that are out of the canvas
-                if (obstacles[i].y > canvas.height + obstacles[i].radius) {
+                // Remove obstacles that have moved off-screen
+                if (obstacles[i].x + obstacleWidth < 0) {
                     obstacles.splice(i, 1);
                     i--;
                 }
@@ -92,17 +86,11 @@
 
         function checkCollision() {
             for (var i = 0; i < obstacles.length; i++) {
-                var dy = ball.y - obstacles[i].y;
-                var distance = Math.sqrt(dy * dy);
-
-                if (distance < ball.radius + obstacles[i].radius) {
-                    if (ball.colors[ball.colorIndex] === obstacles[i].color) {
-                        // Pass through obstacle of the same color
-                        obstacles.splice(i, 1);
-                        i--;
-                    } else {
-                        gameOver();
-                    }
+                var obstacle = obstacles[i];
+                if (plane.x < obstacle.x + obstacleWidth &&
+                    plane.x + plane.width > obstacle.x &&
+                    (plane.y < obstacle.topHeight || plane.y + plane.height > obstacle.topHeight + gapHeight)) {
+                    gameOver();
                 }
             }
         }
@@ -115,10 +103,10 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            drawBall();
+            drawPlane();
             drawObstacles();
 
-            updateBall();
+            updatePlane();
             updateObstacles();
             checkCollision();
 
@@ -126,16 +114,12 @@
         }
 
         document.addEventListener("keydown", function(event) {
-            if (event.keyCode === 32) { // Spacebar to jump
-                ball.velocityY = ball.jumpHeight;
-            } else if (event.keyCode === 37) { // Left arrow to change ball color left
-                ball.colorIndex = (ball.colorIndex + ball.colors.length - 1) % ball.colors.length;
-            } else if (event.keyCode === 39) { // Right arrow to change ball color right
-                ball.colorIndex = (ball.colorIndex + 1) % ball.colors.length;
+            if (event.keyCode === 32) { // Spacebar to make the plane fly up
+                plane.velocityY = plane.lift;
             }
         });
 
         draw();
     </script>
 </body>
-</html
+</html>
