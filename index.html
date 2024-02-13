@@ -1,58 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Levi's  Site Animation</title>
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-  }
-  #animation-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-  #animation {
-    font-size: 48px;
-    font-weight: bold;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <link rel="stylesheet" href="styles.css"> <!-- External CSS file for styles -->
 </head>
 <body>
-<div id="animation-container">
-  <div id="animation">L</div>
-  <div id="animation">e</div>
-  <div id="animation">v</div>
-  <div id="animation">i</div>
-  <div id="animation">'</div>
-  <div id="animation">s</div>
-  <div id="animation">&nbsp;</div>
-  <div id="animation">S</div>
-  <div id="animation">i</div>
-  <div id="animation">t</div>
-  <div id="animation">e</div>
-</div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>Your Website</h1>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<script>
-  const letters = document.querySelectorAll('#animation');
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>Welcome to Your Website</h2>
+            <p>Your captivating tagline goes here.</p>
+            <a href="#contact" class="btn">Get Started</a>
+        </div>
+    </section>
 
-  setTimeout(() => {
-    letters.forEach((letter, index) => {
-      letter.style.opacity = 1;
-      letter.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px)`;
-      setTimeout(() => {
-        letter.style.transform = `translate(0, 0)`;
-      }, index * 100);
-    });
-  }, 500);
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <p>Description of your company or yourself goes here.</p>
+        </div>
+    </section>
 
-</script>
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="service">
+                <h3>Service Title 1</h3>
+                <p>Description of the service goes here.</p>
+            </div>
+            <div class="service">
+                <h3>Service Title 2</h3>
+                <p>Description of the service goes here.</p>
+            </div>
+            <!-- Add more service divs as needed -->
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2>Our Portfolio</h2>
+            <div class="portfolio-item">
+                <!-- Portfolio item goes here (image, title, description) -->
+            </div>
+            <!-- Add more portfolio item divs as needed -->
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>Testimonials</h2>
+            <div class="testimonial">
+                <blockquote>
+                    Testimonial text goes here.
+                </blockquote>
+                <cite>Client Name</cite>
+            </div>
+            <!-- Add more testimonial divs as needed -->
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <p>Contact form or contact details go here.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
