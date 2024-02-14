@@ -6,7 +6,16 @@
     <title>Welcome to Levi's Site</title>
 </head>
 <body>
+    <script>
+        // Check if the user has entered the correct password
+        var enteredCorrectPassword = sessionStorage.getItem('enteredCorrectPassword');
+        if (enteredCorrectPassword !== 'true') {
+            // If not, redirect back to index.html
+            window.location.href = "index.html";
+        }
+    </script>
+
     <h1>Welcome to Levi's Site</h1>
-    <p>This is the website!!</p>
+    <p>The full website</p>
 </body>
 </html>
