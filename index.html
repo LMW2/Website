@@ -31,7 +31,7 @@
         // Check if the user has already entered the correct password before
         var enteredCorrectPassword = sessionStorage.getItem('enteredCorrectPassword');
         if (enteredCorrectPassword === 'true') {
-            window.location.href = "content.html"; // Redirect to content page
+            window.location.href = "content.html"; 
         }
     </script>
 
@@ -42,9 +42,9 @@
     <script>
         function checkPassword() {
             var password = document.getElementById("passwordInput").value;
-            if (password === "yourpassword") { // Replace "yourpassword" with your actual password
+            if (password === "password") { 
                 sessionStorage.setItem('enteredCorrectPassword', 'true');
-                window.location.href = "content.html"; // Redirect to content page
+                window.location.href = "content.html"; 
             } else {
                 alert("Incorrect password. Please try again.");
             }
