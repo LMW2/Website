@@ -25,5 +25,29 @@
     <div class="container">
         <h1>Levi's Site</h1>
     </div>
+
+    <script>
+        // Check if the user has already entered the correct password before
+        var enteredCorrectPassword = sessionStorage.getItem('enteredCorrectPassword');
+        if (enteredCorrectPassword === 'true') {
+            window.location.href = "content.html"; // Redirect to content page
+        }
+    </script>
+
+    <h2>Please enter the password:</h2>
+    <input type="password" id="passwordInput">
+    <button onclick="checkPassword()">Submit</button>
+
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("passwordInput").value;
+            if (password === "yourpassword") { // Replace "yourpassword" with your actual password
+                sessionStorage.setItem('enteredCorrectPassword', 'true');
+                window.location.href = "content.html"; // Redirect to content page
+            } else {
+                alert("Incorrect password. Please try again.");
+            }
+        }
+    </script>
 </body>
 </html>
