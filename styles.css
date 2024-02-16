@@ -1,0 +1,54 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.vault {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://png.pngtree.com/thumb_back/fh260/background/20230720/pngtree-blue-and-purple-neon-star-3d-art-background-with-a-cool-image_3705286.jpg");
+  background-size: cover;
+  overflow: hidden;
+}
+
+.vault-door-left, .vault-door-right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: black;
+  z-index: 1;
+  transition: transform 1s ease;
+}
+
+.vault-door-left {
+  left: 0;
+}
+
+.vault-door-right {
+  right: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-top: 50px;
+}
+
+h1 {
+  color: white;
+  font-size: 48px;
+  font-family: Arial, sans-serif;
+}
+
+.open .vault-door-left {
+  transform: translateX(-100%);
+}
+
+.open .vault-door-right {
+  transform: translateX(100%);
+}
