@@ -14,41 +14,17 @@ body, html {
   overflow: hidden;
 }
 
-.vault-door-left, .vault-door-right {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background-color: black;
-  z-index: 1;
-  transition: transform 1s ease;
-}
-
-.vault-door-left {
-  left: 0;
-}
-
-.vault-door-right {
-  right: 0;
-}
-
 .content {
   position: relative;
   z-index: 2;
   text-align: center;
   padding-top: 50px;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 1s ease, transform 1s ease;
 }
 
-h1 {
-  color: white;
-  font-size: 48px;
-  font-family: Arial, sans-serif;
-}
-
-.open .vault-door-left {
-  transform: translateX(-100%);
-}
-
-.open .vault-door-right {
-  transform: translateX(100%);
+.open .content {
+  opacity: 1;
+  transform: translateY(0);
 }
