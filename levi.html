@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Test Site</title>
   <link rel="stylesheet" href="styles.css">
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      setTimeout(function() {
+        document.querySelector('.vault').classList.add('open');
+      }, 1000); // Adjust the delay as needed
+    });
+  </script>
 </head>
 <body>
   <div class="vault">
