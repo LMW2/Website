@@ -1,23 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Site</title>
-  <link rel="stylesheet" href="styles.css">
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      setTimeout(function() {
-        document.querySelector('.vault').classList.add('open');
-      }, 1000); // Adjust the delay as needed
-    });
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-  <div class="vault">
-    <div class="content">
-      <h1>Test Site</h1>
-    </div>
-  </div>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game Constants
+        const GRAVITY = 0.25;
+        const FLAP_SPEED = -5;
+        const PIPE_WIDTH = 50;
+        const PIPE_GAP = 150;
+
+        let bird = { x: 50, y: canvas.height / 2, velocity: 0 };
+        let pipes = [{ x: canvas.width, height: generatePipeHeight() }];
+        let score = 0;
+        let gameOver = false;
+
+        function generatePipeHeight() {
+            return Math.floor(Math.random() * (canvas.height - PIPE_GAP)) + 50;
+        }
+
+        function drawBird() {
+            ctx.fillStyle = 'yellow';
+            ctx.fillRect(bird.x, bird.y, 30, 30);
+        }
+
+        function drawPipe(pipe) {
+            ctx.fillStyle = 'green';
+            ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.height);
+            ctx.fillRect(pipe.x, pipe.height + PIPE_GAP, PIPE_WIDTH, canvas.height - pipe.height - PIPE_GAP);
+        }
+
+        function update() {
+            if (gameOver) return;
+
+            bird.velocity += GRAVITY;
+            bird.y += bird.velocity;
+
+            if (bird.y >= canvas.height || bird.y <= 0) {
+                endGame();
+            }
+
+            pipes.forEach(pipe => {
+                pipe.x -= 3;
+                if (bird.x + 30 > pipe.x && bird.x < pipe.x + PIPE_WIDTH) {
+                    if (bird.y < pipe.height || bird.y + 30 > pipe.height + PIPE_GAP) {
+                        endGame();
+                    }
+                }
+                if (pipe.x + PIPE_WIDTH < bird.x && !pipe.scored) {
+                    score++;
+                    pipe.scored = true;
+                }
+            });
+
+            pipes = pipes.filter(pipe => pipe.x > -PIPE_WIDTH);
+
+            if (pipes[pipes.length - 1].x < canvas.width - 200) {
+                pipes.push({ x: canvas.width, height: generatePipeHeight(), scored: false });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBird();
+            pipes.forEach(drawPipe);
+
+            ctx.fillStyle = 'black';
+            ctx.font = '24px Arial';
+            ctx.fillText(`Score: ${score}`, 10, 30);
+
+            if (gameOver) {
+                ctx.fillText('Game Over', canvas.width / 2 - 70, canvas.height / 2);
+            }
+        }
+
+        function endGame() {
+            gameOver = true;
+            clearInterval(gameLoop);
+        }
+
+        canvas.addEventListener('click', () => {
+            if (!gameOver) {
+                bird.velocity = FLAP_SPEED;
+            }
+            if (gameOver) {
+                resetGame();
+            }
+        });
+
+        function resetGame() {
+            bird = { x: 50, y: canvas.height / 2, velocity: 0 };
+            pipes = [{ x: canvas.width, height: generatePipeHeight() }];
+            score = 0;
+            gameOver = false;
+            gameLoop = setInterval(() => {
+                update();
+                draw();
+            }, 1000 / 60);
+        }
+
+        let gameLoop = setInterval(() => {
+            update();
+            draw();
+        }, 1000 / 60);
+
+    </script>
 </body>
 </html>
