@@ -7,15 +7,22 @@
 </head>
 <body>
     <script>
-        
         var enteredCorrectPassword = sessionStorage.getItem('enteredCorrectPassword');
         if (enteredCorrectPassword !== 'true') {
-            
             window.location.href = "index.html";
         }
     </script>
 
     <h1>Welcome to Levi's Site</h1>
     <p>The full website</p>
+
+    <!-- Added Button -->
+    <button onclick="redirectToLink()">Go to Example.com</button>
+
+    <script>
+        function redirectToLink() {
+            window.location.href = "https://lmw2.github.io/Website/levi.html";
+        }
+    </script>
 </body>
 </html>
